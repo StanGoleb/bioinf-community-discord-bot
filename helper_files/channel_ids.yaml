@@ -1,0 +1,62 @@
+witamy:
+  required_permission:
+    bots: 20
+    roles: []
+    users: []
+  id: 1050431095268712508
+
+brama:
+  required_permission:
+    bots: 10
+    roles: []
+    users: []
+  id: 1042518403916775577
+
+todo:
+  required_permission:
+    bots: 10
+    roles: []
+    users: []
+  id: 1042548441194180640
+
+dekrety:
+  required_permission:
+    bots: 10
+    roles: []
+    users: []
+  id: 1042519131670458430
+
+glowny:
+  required_permission:
+    bots: 10
+    roles: []
+    users: []
+  id: 1042549919698931712
+
+propozycje:
+  required_permission:
+    bots: 10
+    roles: []
+    users: []
+  id: 1055965856494010478
+
+spam:
+  required_permission:
+    bots: 0
+    roles: [1315013658492796938]
+    users: []
+  id: 1043226081790017626
+
+mc:
+  required_permission:
+    bots: 0
+    roles: []
+    users: []
+  id: 1188240114053300354
+
+test:
+  required_permission:
+    bots: 0
+    roles: ["all"]
+    users: []
+  id: 1003630143383801939

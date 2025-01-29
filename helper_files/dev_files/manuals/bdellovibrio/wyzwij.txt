@@ -1,0 +1,2 @@
+wyzwij {nick}
+Wyzywa wybranego użytkownika przy użyciu losowego wyzwiska z bazy danych.

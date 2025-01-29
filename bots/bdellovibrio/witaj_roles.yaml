@@ -1,0 +1,45 @@
+default:
+  Member:
+    id: 1315057256542502934
+
+stable:
+  Gamer:
+    emoji: 🎮
+    id: 1055454221899661344
+
+yearly:
+  2020:
+    Lic:
+      emoji:
+      id:
+    Mgr:
+      emoji:
+      id:
+  2022:
+    Lic:
+      emoji: 🦛
+      role_id: 1315815001746833559
+      channel_id: 1315815003126894604
+    Mgr:
+      emoji: 🌱
+      role_id: 1315815004909342732
+      channel_id: 1315815006423617546
+  2023:
+    Lic:
+      emoji: 🦙
+      role_id: 1315815007874977862
+      channel_id: 1315815009539985560
+    Mgr:
+      emoji: 💐
+      role_id: 1315815010320257117
+      channel_id: 1315815011951841432
+  2024:
+    Lic:
+      emoji: 🦊
+      role_id: 1315815012912070728
+      channel_id: 1315815014275350660
+    Mgr:
+      emoji: 🪱
+      role_id: 1315815015223263353
+      channel_id: 1315815016267518065
+

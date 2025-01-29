@@ -1,0 +1,15 @@
+# permission file for the bdellovibrio bot
+roles:
+  czatuj: []
+  nowe: []
+  nowe_wyzwisko: []
+  usun_wyzwisko: []
+  lista_wyzwisk: []
+  wyzwij: [1315057256542502934]
+users:
+  admin: []
+  nowe_wyzwisko: [689863160789991473, 545714765901856769]
+  usun_wyzwisko: [689863160789991473, 545714765901856769]
+  lista_wyzwisk: [689863160789991473, 545714765901856769]
+  witaj: []
+

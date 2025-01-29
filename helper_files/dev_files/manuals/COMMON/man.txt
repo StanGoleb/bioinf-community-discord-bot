@@ -1,0 +1,2 @@
+$man {komenda (opcjonalnie)}
+Wypisuje listę komend lub zwraca instrukcję użycia.

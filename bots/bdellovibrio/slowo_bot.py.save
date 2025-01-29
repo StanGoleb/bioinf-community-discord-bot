@@ -1,0 +1,219 @@
+import os
+import re
+import random
+import time
+from datetime import date, timedelta
+import json
+import asyncio
+import discord
+from dotenv import load_dotenv
+from discord.ext import commands
+# from discord import SlashCommand
+# from discord import ButtonStyle, Button
+
+HTML_FILE_PATH = '/home/lamserver/imago/imago/templates/home.html'
+REGEX = r'Słowo na dzień [0-3][0-9]\.[0-1][0-9]: \"(.*?)\"'
+BOT_NAME='slowo_bot'
+
+curr_dictum = 'coś jest nie tak, skontaktuj się z LambiUltraSoft'
+
+load_dotenv('./tokens.env')
+DIS_TOKEN = os.getenv('DISCORD_TOKEN')
+CHAT_BOT_ID=int(os.getenv('BOT_ID'))
+
+INTENTS = discord.Intents.all()
+INTENTS.messages = True
+
+
+bot = commands.Bot(command_prefix='$', intents=INTENTS)
+
+curr_dictum = "Null"
+def read_dictums():
+	with open('./dictums.json') as jfile:
+		dictum_dict = json.load(jfile)
+		last_date = list(dictum_dict)[-1]
+		last_dictum = dictum_dict[last_date]
+		global curr_dictum
+		curr_dictum = f'Słowo na dzień {last_date}: "{last_dictum}"'
+	return dictum_dict
+read_dictums()
+
+async def find_id(ctx, chat_name):
+	with open('../ids/chat_ids.json') as jfile:
+		chat_ids = json.load(jfile)
+	if chat_name in chat_ids:
+		return chat_ids[chat_name]
+
+	else:
+		available_channels = ', '.join(chat_ids.keys())
+		err_msg = f'zła nazwa kanału: {chat_name} \n Dostepne nazwy to {available_channels}'
+		await ctx.send(err_msg)
+		return False
+
+
+def role_file_read(role_file='../ids/role_ids.json'):
+	with open(role_file) as jfile:
+		data = json.load(jfile)
+	return data
+
+
+async def check_permission(ctx, command):
+	with open(f'../permissions/{command}.json') as jfile:
+		permitted = json.load(jfile)
+		name = ctx.message.author.name
+		if name in permitted:
+			return True
+		else:
+			await ctx.send(f'Nie masz dostępu do komendy {command}')
+			return False
+
+def change_dictum(new_dictum, increment=0):
+	new_date_unready = date.today() + timedelta(days=increment)
+	new_date = new_date_unready.strftime('%d.%m')
+
+	with open('./dictums.json', 'r+') as jfile:
+		data = json.load(jfile)
+		data[new_date] = new_dictum
+		jfile.seek(0)
+		json.dump(data, jfile, indent = 4)
+		jfile.truncate()
+	f = open(HTML_FILE_PATH, 'r+b')
+
+	new_input = f'Słowo na dzień {new_date}: "{new_dictum}"'
+	old_html = f.read().decode('utf-8')
+	new_html = re.sub(REGEX, new_input, old_html)
+	#print(new_html)
+	f.seek(0)
+	f.truncate()
+	f.write(new_html.encode('utf8'))
+	f.close()
+	os.system("sudo systemctl restart gunicorn")
+
+	global curr_dictum
+	curr_dictum = new_input
+
+	return f'succesfully changed dictum to: "{new_dictum}" on {new_date}'
+
+
+#================================================================================
+@bot.command()
+async def man(ctx, command='abstract'):
+	if not os.path.isfile(f'../manuals/{BOT_NAME}/{command}.txt'):
+		await ctx.send(f'Brak komendy {command}. Aby zobaczyć listę komend, po prostu wpisz man')
+		return
+	if command != 'abstract':
+		with open(f'../manuals/{BOT_NAME}/{command}.txt') as tfile:
+			data = tfile.read()
+			await ctx.send(data)
+	else:
+		dirs = os.listdir(f'../manuals/{BOT_NAME}')
+		dirs = [elt[:-4] for elt in dirs]
+		dirs.remove('abstract')
+		output = ""
+		for elt in dirs:
+			output += elt + '\n'
+		await ctx.send(output)
+
+@bot.command()
+async def plyny(ctx):
+	await ctx.send("Wanda zmieniła sposób wywoływania komend. Od teraz, zwracaj się do Wandy przy użyciu '%komenda'")
+
+
+@bot.command()
+async def slowo(ctx, day='0'):
+    if day == '0':
+    	await ctx.send(curr_dictum)
+    else:
+    	dictums_dict = read_dictums()
+    	dictum_to_send = dictums_dict.get(day, "Brak takiego dnia w bazie danych. Pamiętaj o odpowiednim formacie np. 01.03 (1 marca).")
+    	msg_to_send = f'Archiwalne słowo na dzień {day}: "{dictum_to_send}"'
+    	await ctx.send(msg_to_send)
+
+@bot.command()
+async def nowe(ctx, dictum, day_increment=0):
+	if not await check_permission(ctx, 'nowe'): return
+	is_done = change_dictum(new_dictum = dictum, increment = day_increment)
+	await ctx.send(is_done)
+
+@bot.command()
+async def czatuj(ctx, message, chat_name='druciaki'):
+	if not await check_permission(ctx, 'czatuj'): return
+	curr_room = bot.get_channel(await find_id(ctx, chat_name))
+	if curr_room:
+		await curr_room.send(message)
+
+
+@bot.command()
+async def wyzwij(ctx, user:discord.User, chat_name='druciaki'):
+	curr_room = bot.get_channel(await find_id(ctx, chat_name))
+	with open('./insults.json') as jfile:
+		insult_list = json.load(jfile)
+		curr_insult = random.sample(insult_list, 1)
+	await curr_room.send(f'{user.mention}, {curr_insult[0]}')
+
+@bot.command()
+async def nowe_wyzwisko(ctx, new_insult):
+	await check_permission(ctx, 'nowe_wyzwisko')
+	with open('./insults.json', 'r+') as jfile:
+		data = json.load(jfile)
+		data.append(new_insult)
+		jfile.seek(0)
+		json.dump(data, jfile, indent = 4)
+	await ctx.send(f'Dodano nowe wyzwisko: {new_insult}')
+
+@bot.command()
+async def lista_wyzwisk(ctx):
+	with open('./insults.json') as jfile:
+		data = json.load(jfile)
+	output = 'Mam w bazie następujące wyzwiska:\n'
+	for ins_ind, insult in enumerate(data):
+		output += f'{ins_ind + 1}. {insult} \n'
+	await ctx.send(output)
+#================================================================================
+
+role_emojis = ["👶", "🧒", "👽", "🧓", "🧙"]
+@bot.command()
+async def witaj(ctx, channel="witamy"):
+	wit_id = await find_id(ctx, channel)
+	wit_channel = bot.get_channel(wit_id)
+	button_msg = await wit_channel.send("Aby przejść dalej, kliknij przycisk dla swojej roli:\n👶 - rocznik 2k23\n🧒 - rocznik 2k22\n👽 - rocznik 2k21\n🧓 - rocznik 2k20\n🧙 - mędrcy (Wyższy poziom)")
+	for emoji in role_emojis:
+		await button_msg.add_reaction(emoji)
+
+@bot.event
+async def on_raw_reaction_add(payload):
+	curr_emoji = payload.emoji
+	roles = role_file_read()
+	if payload.member.id != CHAT_BOT_ID:
+		curr_role = payload.member.guild.get_role(roles[curr_emoji.name])
+		await payload.member.add_roles(curr_role)
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+	curr_emoji = payload.emoji
+	roles = role_file_read()
+	guild = bot.get_guild(payload.guild_id)
+	member = guild.get_member(payload.user_id)
+
+	curr_role = guild.get_role(roles[curr_emoji.name])
+	await member.remove_roles(curr_role)
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("Taka komenda nie istnieje. Napisz $man, aby wyświetlić wszystkie dostępne komendy.")
+    else:
+        print(f'Wystąpił błąd: {error}')
+
+
+#===========================================================================
+
+@tasks.loop(second=2)
+async def change_color():
+	curr_guild = bot.get_guild("1042518403916775574")
+
+
+
+
+bot.run(DIS_TOKEN, reconnect=True)
+

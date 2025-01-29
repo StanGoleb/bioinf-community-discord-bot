@@ -1,0 +1,2 @@
+slowo {data dd.mm (domyślnie dzisiejsza)}
+Wypisuje ostatnie słowo na dzień dodane w bazie danych.

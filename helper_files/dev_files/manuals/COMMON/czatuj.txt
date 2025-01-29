@@ -1,0 +1,2 @@
+czatuj "tekst" {kanał(domyślnie druciaki)}
+Wyślij w imieniu bota wiadomość na wybranym serwerze. Wybór bota zależy tylko od przedrostka np. $,%.

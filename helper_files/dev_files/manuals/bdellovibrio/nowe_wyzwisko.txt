@@ -1,0 +1,2 @@
+nowe_wyzwisko "tekst"
+Wprowadza nowe wyzwisko do bazy danych.

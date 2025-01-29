@@ -1,0 +1,2 @@
+nowe "tekst" {dzień relatywnie (domyślnie dzisiaj czyli 0, jutro to 1 itd.)}
+Dodaje/Zmienia słowo na wybrany dzień.
