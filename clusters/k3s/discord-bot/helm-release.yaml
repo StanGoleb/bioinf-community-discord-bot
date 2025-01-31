@@ -2,14 +2,25 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: discord-bot
-  namespace: default
+  namespace: discord-bots
 spec:
   releaseName: discord-bot
+  interval: 5m
   chart:
     spec:
       chart: ./helm-chart
       sourceRef:
         kind: GitRepository
-        name: discord-bots-repo
+        name: BioinfCommunityDiscordBots
         namespace: flux-system
-      interval: 5m
+  values:
+    envFrom:
+      - configMapRef:
+          name: bot-config
+    volumeMounts:
+      - name: bot-storage
+        mountPath: /app/data
+    volumes:
+      - name: bot-storage
+        persistentVolumeClaim:
+          claimName: discord-bots-pvc
