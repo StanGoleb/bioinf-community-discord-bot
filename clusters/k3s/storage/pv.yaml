@@ -9,6 +9,9 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   storageClassName: longhorn
+  claimRef:
+    name: discord-bots-pvc
+    namespace: discord-bots
   csi:
     driver: driver.longhorn.io
     volumeHandle: discord-bots-volume
