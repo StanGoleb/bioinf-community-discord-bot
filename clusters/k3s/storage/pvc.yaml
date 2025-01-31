@@ -9,5 +9,5 @@ spec:
   resources:
     requests:
       storage: 8Gi
-  volumeName: discord-bots-volume
+  volumeName: discord-bots-pv
   storageClassName: longhorn
