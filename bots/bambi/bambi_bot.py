@@ -11,7 +11,7 @@ from discord.ext import commands
 from discord import SlashCommand
 from discord import ButtonStyle, Button
 
-load_dotenv('./tokens.env')
+load_dotenv('/tokens/bambi.env')
 DIS_TOKEN = os.getenv('DISCORD_TOKEN')
 CHAT_BOT_ID=int(os.getenv('BOT_ID'))
 
