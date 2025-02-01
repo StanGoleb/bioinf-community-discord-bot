@@ -1,11 +1,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: flux-system
+  name: discord-bot
   namespace: flux-system
 spec:
   interval: 10m
-  path: "./clusters/k3s/flux-system/"
+  path: "./clusters/k3s/discord-bot/"
   prune: true
   sourceRef:
     kind: GitRepository
