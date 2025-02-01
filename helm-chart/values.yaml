@@ -1,5 +1,11 @@
 replicaCount: 1
 
+bots:
+  - name: bdellovibrio
+    script: bdellovibrio_bot.py
+  - name: bambi
+    script: bambi_bot.py
+
 image:
   repository: your-container-image
   tag: latest
