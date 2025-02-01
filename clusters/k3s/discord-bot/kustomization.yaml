@@ -10,5 +10,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: BioinfCommunityDiscordBots
-  resources:
-    - ../discord-bot
