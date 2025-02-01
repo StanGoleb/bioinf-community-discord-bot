@@ -14,9 +14,6 @@ spec:
         name: BioinfCommunityDiscordBots
         namespace: flux-system
   values:
-    envFrom:
-      - configMapRef:
-          name: bot-config
     volumeMounts:
       - name: bot-storage
         mountPath: /app/data
