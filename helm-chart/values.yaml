@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: your-container-image
+  tag: latest
+  pullPolicy: IfNotPresent
+
+volumeMounts:
+  - name: tokens-storage
+    mountPath: /tokens
+
+volumes:
+  - name: tokens-storage
+    persistentVolumeClaim:
+      claimName: tokens-pvc
