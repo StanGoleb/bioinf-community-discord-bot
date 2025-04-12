@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 import json
 import random
 
-# Przenieś się do katalogu pliku
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-project_root_dir = os.path.abspath(os.path.join(os.getcwd(), '..', '..'))
+
+project_root_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
 if project_root_dir not in sys.path:
     sys.path.append(project_root_dir)
 
@@ -33,7 +33,7 @@ class BambiBot(commands.Bot):
         self.cog = None
 
     async def setup_hook(self):
-        await self.load_extension("bots.main_cogs")
+        await self.load_extension("main_cogs")
         self.cog = self.get_cog("MainCommands")
 
         @self.command(help="Wylosuj losowy wers piosenki")
