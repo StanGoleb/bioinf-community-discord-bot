@@ -21,12 +21,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Set lowercase owner name
+        id: vars
+        run: echo "owner_lc=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
       - name: Log in to GHCR
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ steps.vars.outputs.owner_lc }}" --password-stdin
 
       - name: Build and Push image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/bioinf-community-discord-bot-${{ matrix.bot }}:latest
+          IMAGE_NAME=ghcr.io/${{ steps.vars.outputs.owner_lc }}/bioinf-community-discord-bot-${{ matrix.bot }}:latest
           docker build -t $IMAGE_NAME -f bots/${{ matrix.bot }}/Dockerfile .
           docker push $IMAGE_NAME
-
