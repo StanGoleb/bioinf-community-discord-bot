@@ -1,0 +1,32 @@
+name: Build and Push Bots
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'bots/**'
+      - 'main_cogs.py'
+      - 'helper_files/**'
+      - 'requirements.txt'
+      - '.github/workflows/build.yml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        bot:
+          - bambi
+          # - wanda
+          # - szymon
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+      - name: Build and Push image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/discord-bots/${{ matrix.bot }}:latest -f bots/${{ matrix.bot }}/Dockerfile .
+          docker push ghcr.io/${{ github.repository_owner }}/discord-bots/${{ matrix.bot }}:latest
