@@ -3,8 +3,8 @@ import sys
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import json
 import random
+import ruamel.yaml
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,6 +23,8 @@ intents.message_content = True
 
 activity = discord.Activity(type=discord.ActivityType.listening, name="BFF - bambi, Young Leosia, PG$, @atutowy")
 
+yaml = ruamel.yaml.YAML()
+
 class BambiBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=BOT_PREFIX, intents=intents, activity=activity)
@@ -38,10 +40,10 @@ class BambiBot(commands.Bot):
 
         @self.command(help="Wylosuj losowy wers piosenki")
         async def wers(ctx):
-            with open("wers.json", encoding="utf-8") as jfile:
-                data = json.load(jfile)
-            with open("przywitania.json", encoding="utf-8") as jfile:
-                greetings = json.load(jfile)
+            with open("wers.yaml", encoding="utf-8") as wfile:
+                data = yaml.load(wfile)
+            with open("przywitania.yaml", encoding="utf-8") as pfile:
+                greetings = yaml.load(pfile)
             random_song = random.choice(list(data.keys()))
             random_line = random.choice(data[random_song])
             random_greeting = random.choice(greetings)
