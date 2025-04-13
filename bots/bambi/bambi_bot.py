@@ -47,7 +47,7 @@ class BambiBot(commands.Bot):
             random_song = random.choice(list(data.keys()))
             random_line = random.choice(data[random_song])
             random_greeting = random.choice(greetings)
-            await ctx.send(f"{random_greeting}\n{random_line}\n-Bambi, {random_song}")
+            await ctx.send(f"{random_greeting}\n{random_line}\n{random_song}")
 
 bot = BambiBot()
 bot.run(TOKEN)
