@@ -118,6 +118,7 @@ class MainCommands(commands.Cog):
             if command_name:
                     if isinstance(ctx.message.channel, discord.DMChannel):
                         print(error)
+                        await ctx.send(error)
                         await ctx.send("Część komend nie działa w DMach :o Jeśli uważasz, że to błąd, skontaktuj się z twórcą.")
                     else:
                         print(error)
